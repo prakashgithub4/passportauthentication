@@ -23,6 +23,16 @@ Route::group(['middleware'=>'auth:api','namespace'=>'Api'],function(){
 Route::group(['middleware'=>'auth:api','namespace'=>'Api'],function(){
    Route::get('/profile','ProfileController@index');
    Route::post('/update/profile_pic',"ProfileController@updateprofilepic");
+   Route::post('/activity','ActivityController@create');
+   Route::get('/activity/list','ActivityController@index');
+   Route::post('/activity/update','ActivityController@update');
+   Route::post('/activity/delete','ActivityController@destroy');
+});
+Route::group(['middleware'=>'auth:api','namespace'=>'Api','prefix'=>'post/'],function(){
+    Route::post('/create','PostController@store');
+    Route::get('/delete/{id}','PostController@destroy');
+    Route::get('/edit/{id?}','PostController@edit');
+
 });
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->user();
