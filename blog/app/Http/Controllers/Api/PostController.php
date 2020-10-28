@@ -116,40 +116,51 @@ class PostController extends Controller
      */
     public function update(Request $request)
     {
-        // $userdata = Auth::user();
-        // $data = $request->all();
-        // $validator = Validator::make($data, [
-        //     'title' => 'required',
-        //     'description' => 'required',
-        //    // 'user_id'=>'required',
-        //     'activity_id'=>'required',
-        //     'location'=>'required',
-        //     'image' => 'image|mimes:jpeg,png,jpg|max:2048',
-        //     'status'=>'required',
-        //     'type'=>'required'
-        // ]);
-        // if ($validator->fails()) {
-        //     return response()->json(['stat' => "errors", "errors" => $validator->errors()]);
-        // }
-        // else{
-        //     if ($request->hasFile('image')) {
-        //         $image = $request->file('image');
-        //         $data['image'] = time() . '.' . $image->getClientOriginalExtension();
-        //         $destinationPath = public_path('uploads/post/');
-        //         $image->move($destinationPath, $data['image']);
-        //     }
-        //     $post = new Post();
-        //     $post->title=$data['title'];
-        //     $post->description=$data['description'];
-        //     $post->user_id=$userdata->id;
-        //     $post->activity_id=$data['activity_id'];
-        //     $post->location=$data['location'];
-        //     $post->image=$data['image'];
-        //     $post->status=$data['status'];
-        //     $post->save();
-        // }
-        // return response()->json(['stat'=>'success','msg'=>'Post save successfully','data'=>$post],200);
-        echo "hello"; die;
+        $userdata = Auth::user();
+         $data = $request->all();
+
+        $validator = Validator::make($data, [
+            'title' => 'required',
+            'description' => 'required',
+            'id'=>'required',
+
+            'activity_id'=>'required',
+            'location'=>'required',
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'status'=>'required',
+            'type'=>'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['stat' => "errors", "errors" => $validator->errors()]);
+        }
+        else{
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $data['image'] = time() . '.' . $image->getClientOriginalExtension();
+                $destinationPath = public_path('uploads/post/');
+                $image->move($destinationPath, $data['image']);
+            }
+            $post = Post::find($data['id']);
+            $filename =public_path('uploads/post/'.$post->image);
+            File::delete($filename);
+           if($post->count() > 0){
+            $post->title=$data['title'];
+            $post->description=$data['description'];
+            $post->user_id=$userdata->id;
+            $post->activity_id=$data['activity_id'];
+            $post->location=$data['location'];
+            if(!empty($request->image)){
+                $post->image=$data['image'];
+            }
+
+            $post->status=$data['status'];
+            $post->save();
+
+           }
+
+        }
+        return response()->json(['stat'=>'success','msg'=>'Post save successfully','data'=>$post],200);
+
     }
 
     /**

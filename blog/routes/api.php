@@ -32,6 +32,7 @@ Route::group(['middleware'=>'auth:api','namespace'=>'Api','prefix'=>'post/'],fun
     Route::post('/create','PostController@store');
     Route::get('/delete/{id}','PostController@destroy');
     Route::get('/edit/{id?}','PostController@edit');
+    Route::post('/update','PostController@update');
 
 });
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
