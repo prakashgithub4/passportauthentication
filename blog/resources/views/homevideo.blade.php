@@ -24,12 +24,12 @@
 <div class="container" style="margin-top: 100px;">
    <div class="row">
        <h4 class="text-center">
-           Upload Images
+           Upload Video
        </h4>
 
        <div class="row">
            <div id="formWrapper" class="col-md-4 col-md-offset-4">
-               <form class="form-vertical" role="form" enctype="multipart/form-data" method="post" action="{{ route('uploadImage')  }}">
+               <form class="form-vertical" role="form" enctype="multipart/form-data" method="post" action="{{ route('videoupload')  }}">
                    {{csrf_field()}}
                    @if(session()->has('status'))
                        <div class="alert alert-info" role="alert">
@@ -37,14 +37,14 @@
                        </div>
                    @endif
                    <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                       <input type="file" name="image_name" class="form-control" id="name" value="">
-                       @if($errors->has('image_name'))
-                           <span class="help-block">{{ $errors->first('image_name') }}</span>
+                       <input type="file" name="file_name" class="form-control" id="name" value="">
+                       @if($errors->has('file_name'))
+                           <span class="help-block">{{ $errors->first('file_name') }}</span>
                        @endif
                    </div>
 
                    <div class="form-group">
-                       <button type="submit" class="btn btn-success">Upload Image </button>
+                       <button type="submit" class="btn btn-success">Upload Video </button>
                    </div>
                </form>
 
@@ -53,14 +53,21 @@
    </div>
 </div>
 <div class="row" id="displayImages">
-    @if($images)
-        @foreach($images as $image)
+    @if(@$videos)
+        @foreach($videos as $videos)
 
             <div class="col-md-3">
-                <a href="{{$image->image_url}}" target="_blank">
-                    <img src="{{$image->image_url}}" class="img-responsive" alt="{{$image->image_name}}">
+                <a href="{{$videos->video_url}}" target="_blank">
+                   
+                    <video width="400px" height="400px"controls>
+                    <source src="{{$videos->video_url}}" type="video/mp4">
+  
+                     Your browser does not support HTML video.
+                   </video>
+            
                 </a>
-            <a href="{{url('/delete/'.$image->id)}}" class="btn btn-danger">Delete</a>
+                 <a href="{{route('delete-video',['id'=>$videos])}}" class="btn btn-danger">Delete</a>
+         
             </div>
         @endforeach
     @endif

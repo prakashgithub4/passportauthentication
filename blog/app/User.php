@@ -32,4 +32,11 @@ class User extends Authenticatable
         return $this->hasMany('\App\OauthAccessToken');
     }
 
+   public function post(){
+    return $this->hasMany('App\Post','user_id','id');
+}
+public function users(){
+    return $this->belongsTo('App\User');
+}
+
 }

@@ -7,37 +7,15 @@ use App\Http\Controllers\Controller;
 use App\Post;
 use Auth;
 use File;
-
+use App\Comment;
 
 use Illuminate\Support\Facades\Validator;
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+  public function index(){
+    $post = Post::with(['activity','user','comment'])->get();
+    return response()->json(['stat'=>'success','msg'=>"post fetch successfully","data"=>$post],200);
+  }
     public function store(Request $request)
     {
         $userdata = Auth::user();
@@ -75,26 +53,7 @@ class PostController extends Controller
         return response()->json(['stat'=>'success','msg'=>'Post save successfully','data'=>$post],200);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
 
-
-
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
        try{
@@ -189,5 +148,40 @@ class PostController extends Controller
           return response()->json(['stat'=>"success","msg"=>"somthing wrong with this api"],400);
         }
 
+    }
+    public function create_comment(Request $request){
+
+        $userdata = Auth::user();
+        $data = $request->all();
+       $validator = Validator::make($data, [
+          "post_id"=>"required",
+         // "parent_id"=>"required",
+          "comment"=>"required",
+          //"status"=>"required"
+
+       ]);
+       if ($validator->fails()) {
+               return response()->json(['stat' => "errors", "errors" => $validator->errors()]);
+        }else{
+               $comment  = new Comment();
+               $comment->user_id = $userdata->id;
+               $comment->post_id = $request->post_id;
+               $comment->parent_id = (!empty($request->parent_id))?$request->parent_id:0;
+               $comment->comment = $request->comment;
+               $comment->status = 'A';
+               $comment->save();
+               return response()->json(['stat'=>'success','msg'=>"comment added successfully","data"=>$comment],200);
+    }
+    }
+    public function get_comments(Request $request){
+        $userdata = Auth::user();
+        $data = $request->all();
+       $validator = Validator::make($data, [
+          "post_id"=>"required",
+         // "parent_id"=>"required",
+
+          //"status"=>"required"
+
+       ]);
     }
 }

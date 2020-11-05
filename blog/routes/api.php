@@ -33,8 +33,14 @@ Route::group(['middleware'=>'auth:api','namespace'=>'Api','prefix'=>'post/'],fun
     Route::get('/delete/{id}','PostController@destroy');
     Route::get('/edit/{id?}','PostController@edit');
     Route::post('/update','PostController@update');
+    Route::get('/feeds','PostController@index');
 
 });
+Route::group(["middleware"=>"auth:api",'namespace'=>'Api','prefix'=>'post/comment'],function(){
+Route::post('/create','PostController@create_comment');
+Route::post('/get_comment','PostController@get_comments');
+});
+
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->user();
 
